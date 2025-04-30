@@ -24,6 +24,41 @@ def get_next_open_row(board, col):
 
 def drop_piece(board, row, col, piece):
 	board[row][col] = piece
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def minimax(board, depth, maximizing_player):
 	valid_locations = get_valid_locations(board)
 	terminal = is_terminal_node(board)
@@ -63,3 +98,91 @@ def minimax(board, depth, maximizing_player):
 				value = new_score
 				column = col
 		return column, value
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+else:
+				col = minimax(board,4,True)[0]
+
+				if is_valid_location(board, col):
+					row = get_next_open_row(board, col)
+					drop_piece(board, row, col, 2)
+
+					if winning_move(board, 2):
+						label = myfont.render("Player 2 wins!!", 1, YELLOW)
+						screen.blit(label, (40,10))
+						game_over = True
+
+			#print_board(board)
+			draw_board(board)
+
+			turn += 1
+			turn = turn % 2
+
+			if game_over:
+				pygame.time.wait(3000)
