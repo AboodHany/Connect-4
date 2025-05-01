@@ -137,55 +137,64 @@ pygame.display.update()
 
 myfont = pygame.font.SysFont("monospace", 75)
 
+vs_ai = True # Change to True if you want to play against AI
+
 while not game_over:
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
 
-        if event.type == pygame.MOUSEMOTION:
-            pygame.draw.rect(screen, BLACK, (0,0, width, SQUARESIZE))
-            posx = event.pos[0]
-            if turn == 0:
-                pygame.draw.circle(screen, RED, (posx, int(SQUARESIZE/2)), RADIUS)
-            pygame.display.update()
-
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if turn == 0:
-                posx = event.pos[0]
-                col = int(math.floor(posx/SQUARESIZE))
+            pygame.draw.rect(screen, BLACK, (0, 0, width, SQUARESIZE))
+            posx = event.pos[0]
+            col = int(math.floor(posx / SQUARESIZE))
 
-                if is_valid_location(board, col):
-                    row = get_next_open_row(board, col)
+            if is_valid_location(board, col):
+                row = get_next_open_row(board, col)
+
+                if turn == 0:
                     drop_piece(board, row, col, 1)
 
                     if winning_move(board, 1):
                         label = myfont.render("Player 1 wins!!", 1, RED)
-                        screen.blit(label, (40,10))
+                        screen.blit(label, (40, 10))
                         game_over = True
 
-                    draw_board(board)
-                    turn = 1
+                    turn += 1
+                    turn = turn % 2
 
-    # دور الذكاء الاصطناعي (Player 2)
-    if turn == 1 and not game_over:
-        col, _ = minimax(board, 4, True)
+                elif not vs_ai:
+                    drop_piece(board, row, col, 2)
+
+                    if winning_move(board, 2):
+                        label = myfont.render("Player 2 wins!!", 1, YELLOW)
+                        screen.blit(label, (40, 10))
+                        game_over = True
+
+                    turn += 1
+                    turn = turn % 2
+
+                draw_board(board)
+
+
+
+    if vs_ai and turn == 1 and not game_over:
+        col, minimax_score = minimax(board, 4, True)
 
         if is_valid_location(board, col):
-            pygame.time.wait(500)
             row = get_next_open_row(board, col)
             drop_piece(board, row, col, 2)
 
             if winning_move(board, 2):
-                label = myfont.render("Player 2 wins!!", 1, YELLOW)
-                screen.blit(label, (40,10))
+                label = myfont.render("AI wins!!", 1, YELLOW)
+                screen.blit(label, (40, 10))
                 game_over = True
 
             draw_board(board)
-            turn = 0
 
-turn += 1
-turn = turn % 2
+            turn += 1
+            turn = turn % 2
 
-if game_over:
-    pygame.time.wait(3000)
+    if game_over:
+        pygame.time.wait(3000)
